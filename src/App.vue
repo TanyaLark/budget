@@ -2,12 +2,7 @@
   <div id="app">
     <Form @submitForm="onFormSubmit"/>
     <TotalBalance :total="totalBalance" />
-      <div class="sortList">
-        <el-button type="success" icon="el-icon-top" @click="showOnlyIncome()">Show only income</el-button>
-        <el-button type="info" icon="el-icon-s-data" @click="showAll()">Show all</el-button>
-        <el-button type="danger" icon="el-icon-bottom" @click="showOnlyOutcome()">Show only outcome</el-button>
-      </div>
-    <BudgetList :list="sortList" @deleteItem="onDeleteItem" />
+    <BudgetList :list="list" @deleteItem="onDeleteItem" />
   </div>
 </template>
 
@@ -38,7 +33,6 @@ export default {
         id: 2
       }
     },
-    sortList: {}
   }),
   computed: {
     totalBalance(){
@@ -51,11 +45,10 @@ export default {
       return Object.values(this.list).reduce(
         (acc, item) => acc + item.value,0
       );
-    }
+    },
   },
   methods:{
     onDeleteItem(id){
-      this.$delete(this.sortList, id);
       this.$delete(this.list, id);
     },
     onFormSubmit(data){
@@ -66,31 +59,6 @@ export default {
 
       this.$set(this.list, newObj.id, newObj);
     },
-    showOnlyIncome(){
-      const incomeList = Object.values(this.list).filter(item => item.value > 0);
-      const entriesArr = [];
-      for (let i = 0; i < incomeList.length; i++) {
-        const keysArray = [incomeList[i].id, incomeList[i]];
-        entriesArr.push(keysArray)
-       }
-      const entries = new Map(entriesArr);
-      this.sortList = Object.fromEntries(entries);
-      return this.sortList;
-    },
-    showAll(){
-      return this.sortList = this.list;
-    },
-    showOnlyOutcome(){
-      const outcomeList = Object.values(this.list).filter(item => item.value < 0);
-      const entriesArr = [];
-      for (let i = 0; i < outcomeList.length; i++) {
-        const keysArray = [outcomeList[i].id, outcomeList[i]];
-        entriesArr.push(keysArray)
-       }
-      const entries = new Map(entriesArr);
-      this.sortList = Object.fromEntries(entries);
-      return this.sortList;
-    }
   }
 }
 </script>
